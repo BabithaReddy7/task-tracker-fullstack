@@ -1,38 +1,32 @@
-import React, { Component } from "react";
-import axios from "axios";
-import { Navigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import API from "../../api";
 
-class Signup extends Component {
-  state = { name: "", email: "", password: "", redirect: false };
+const Signup = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  handleChange = (e) => this.setState({ [e.target.name]: e.target.value });
-
-  handleSubmit = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    axios
-      .post("https://tasktracker-q3ni.onrender.com/signup", {
-        name: this.state.name,
-        email: this.state.email,
-        password: this.state.password,
-      })
-      .then(() => this.setState({ redirect: true }))
-      .catch(() => alert("Signup failed!"));
+    try {
+      await API.post("/signup", { name, email, password });
+      alert("Signup successful! Please login.");
+      navigate("/login");
+    } catch (error) {
+      console.error("Signup failed:", error.response?.data || error.message);
+    }
   };
 
-  render() {
-    if (this.state.redirect) return <Navigate to="/login" />;
-    return (
-      <div className="container mt-5">
-        <h2>Signup</h2>
-        <form onSubmit={this.handleSubmit}>
-          <input type="text" name="name" placeholder="Name" onChange={this.handleChange} required />
-          <input type="email" name="email" placeholder="Email" onChange={this.handleChange} required />
-          <input type="password" name="password" placeholder="Password" onChange={this.handleChange} required />
-          <button type="submit">Signup</button>
-        </form>
-      </div>
-    );
-  }
-}
+  return (
+    <form onSubmit={handleSignup}>
+      <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
+      <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+      <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+      <button type="submit">Signup</button>
+    </form>
+  );
+};
 
 export default Signup;
