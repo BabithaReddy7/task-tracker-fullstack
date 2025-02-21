@@ -21,7 +21,7 @@ class Dashboard extends Component {
     e.preventDefault();
     axios
       .post(
-        "https://tasktracker-q3ni.onrender.com/api/tasks",
+        "https://tasktracker-q3ni.onrender.com/tasks",
         {
           title: this.state.title,
           description: this.state.description,
@@ -34,7 +34,7 @@ class Dashboard extends Component {
 
   handleDeleteTask = (id) => {
     axios
-      .delete(`https://tasktracker-q3ni.onrender.com/api/tasks/${id}`, {
+      .delete(`https://tasktracker-q3ni.onrender.com/tasks/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then(() => this.fetchTasks());
